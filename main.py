@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, Response
 import requests
 import os
 from supabase import create_client, Client
+from flask import jsonify
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -77,8 +78,11 @@ def click_tracking():
 
 @app.route('/dashboard-api')
 def dashboard_api():
-    data = supabase.table("email_tracking").select("*").order("timestamp", desc=True).execute().data
-    return jsonify(data)
+    try:
+        result = supabase.table("email_tracking").select("*").order("timestamp", desc=True).execute()
+        return jsonify(result.data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # ✅ Run Flask app
 if __name__ == '__main__':
