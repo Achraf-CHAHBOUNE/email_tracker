@@ -1,0 +1,11 @@
+name: email-tracking
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - flask
+  - requests
+  - pip
+  - pip:
+      - supabase
