@@ -1,13 +1,15 @@
 from flask import Flask, request, redirect, Response
-import requests
+import requests, os
+from dotenv import load_dotenv
 from supabase import create_client, Client
 
-app = Flask(__name__)
+load_dotenv()
 
-# Replace with your real Supabase credentials
-SUPABASE_URL = "https://tqdxelnbesictgfapwca.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxZHhlbG5iZXNpY3RnZmFwd2NhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NzU5MTIsImV4cCI6MjA2ODI1MTkxMn0._iE9tgg5G1BAiJOMxo2RqmtkKhwABzDZlHDIo5rhOIM"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+app = Flask(__name__)
 
 def get_geo(ip):
     try:
@@ -24,12 +26,8 @@ def open_tracking():
     user_agent = request.headers.get('User-Agent')
 
     supabase.table("email_tracking").insert({
-        "type": "open",
-        "email": email,
-        "ip": ip,
-        "country": country,
-        "city": city,
-        "user_agent": user_agent
+        "type": "open", "email": email, "ip": ip,
+        "country": country, "city": city, "user_agent": user_agent
     }).execute()
 
     pixel = b"GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff!" \
@@ -46,13 +44,8 @@ def click_tracking():
     user_agent = request.headers.get('User-Agent')
 
     supabase.table("email_tracking").insert({
-        "type": "click",
-        "email": email,
-        "url": url,
-        "ip": ip,
-        "country": country,
-        "city": city,
-        "user_agent": user_agent
+        "type": "click", "email": email, "url": url, "ip": ip,
+        "country": country, "city": city, "user_agent": user_agent
     }).execute()
 
     return redirect(url)
