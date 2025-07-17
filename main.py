@@ -74,6 +74,12 @@ def click_tracking():
 
     return redirect(url)
 
+
+@app.route('/dashboard-api')
+def dashboard_api():
+    data = supabase.table("email_tracking").select("*").order("timestamp", desc=True).execute().data
+    return jsonify(data)
+
 # ✅ Run Flask app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
